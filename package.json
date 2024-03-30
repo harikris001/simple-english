@@ -10,10 +10,6 @@
   },
   "dependencies": {
     "@langchain/community": "^0.0.43",
-    "@nextui-org/react": "^2.2.10",
-    "@nextui-org/system": "^2.0.15",
-    "@nextui-org/theme": "^2.1.18",
-    "framer-motion": "^11.0.23",
     "gsap": "^3.12.5",
     "next": "14.1.4",
     "next-pwa": "^5.6.0",
