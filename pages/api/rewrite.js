@@ -1,3 +1,9 @@
+import { Ollama } from "@langchain/community/llms/ollama";
+
+
+const promptPrefix = `Correct and Rewrite the text delimited in triple backticks in simple English.
+Output ONLY the rewritten text.`
+
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -11,27 +17,40 @@ export default async function handler(req, res) {
   }
 
   try {
-    const apiResponse = await fetch('http://localhost:11434/api/generate', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: "mistral",
-        prompt: `Correct and rewrite in simple English: ${text}`
-      }),
+    const ollama = new Ollama({
+      baseUrl: "http://localhost:11434", // Default value
+      model: "mistral", // Default value
     });
-
-    if (!apiResponse.ok) {
-      throw new Error(`API responded with status code ${apiResponse.status}`);
+    
+    const stream = await ollama.stream(
+      `${promptPrefix} \`\`\`${text}\`\`\``
+    );
+    
+    const chunks = [];
+    for await (const chunk of stream) {
+      chunks.push(chunk);
     }
+    if (chunks.length === 0) {
+      // Handle case where no data is returned
+      throw new Error('No data returned from the API');
+    }
+    const apiData = chunks.join("");
+    console.log(apiData);
 
-    const apiData = await apiResponse.json();
-    const rewrittenText = apiData.text;
-    console.log(rewrittenText)
-    res.status(200).json({ rewrittenText });
-  } catch (error) {
-    console.error('Error calling the custom API:', error);
-    res.status(500).json({ error: 'Failed to process the text' });
+
+    res.status(200).json({ output: apiData });
+
+  }catch (error) {
+    console.error('Error calling the custom API:', error.message);
+
+    if (error.message.includes('No data returned from the API')) {
+      res.status(204).json({ error: 'No content available to return' });
+    } 
+    else if (error.message.includes('ECONNREFUSED')) {
+      res.status(503).json({ error: 'Service unavailable. Could not connect to the API.' });
+    } 
+    else {
+      res.status(500).json({ error: 'Failed to process the text' });
+    }
   }
 }
