@@ -9,27 +9,28 @@ export default function Home() {
     event.preventDefault();
     setError('');
 
-    console.log("Calling API...");
-
+    console.log("Calling Mistral API...");
+    
     try {
       const response = await fetch('/api/rewrite', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        // body: JSON.stringify({ text: inputText }),
-        body: JSON.stringify({ inputText }),
+        body: JSON.stringify({ text: inputText }),
       });
-
+      
       if (!response.ok) {
         throw new Error('Failed to rewrite text');
       }
 
-      const { rewrittenText } = await response.json();
-      // setInputText(rewrittenText); 
-      setApiOutput(`${rewrittenText.text}`);
+      const data = await response.json();
+      const { output } = data;
+      // console.log(output)
+      console.log("Mistral replied: ", output)
+      setApiOutput(`${output}`);
     } 
-    catch (error) {
+    catch (error) { 
       console.error('Error from the CODE: ', error);
       setError('Failed to rewrite text. Please try again.');
     }
@@ -45,8 +46,6 @@ export default function Home() {
       style={{ width: '300px', height: '100px', marginBottom: '20px' }}
       placeholder="Enter text here"
     />
-    {/* <button type="submit" style={{ position: 'absolute', right: '10', bottom: '0'}}>Submit</button> */}
-    {/* <button type="submit" style={{ position: 'absolute', right: '10px', bottom: '10px' }}>Submit</button> */}
     <button type="submit" style={{ position: 'absolute', right: '10px', bottom: '0', marginTop: '20px' }}>Submit</button>
 
     <div className="output-content" >
