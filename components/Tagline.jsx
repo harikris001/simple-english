@@ -11,7 +11,7 @@ function Tagline() {
         const words = [" Simple.", " Concise.", " Perfect."]
         const cursor = gsap.to('.cursor', { opacity: 0, ease: "power2.inOut", repeat: -1 });
         let boxTL = gsap.timeline()
-        boxTL.to('.box', { duration: 1, width: "36vw", delay: 0.5, ease: "power4.inOut" }).from('.f-text', { duration: 1, y: "5vh", ease: "power3.out", onComplete: () => parentTL.play() })
+        boxTL.to('.box', { duration: 1, width: "calc(18 * var(--twa-fs))", delay: 0.5, ease: "power4.inOut" }).from('.f-text', { duration: 1, y: "5vh", ease: "power3.out", onComplete: () => parentTL.play() })
         let parentTL = gsap.timeline({ repeat: -1 }).pause()
         words.forEach(word => {
             let childTL = gsap.timeline({ repeat: 1, yoyo: true, repeatDelay: 1 })

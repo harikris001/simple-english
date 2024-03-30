@@ -4,6 +4,11 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --twa-fs: 28px;
+  --twa-bh: 2px;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -19,7 +24,7 @@ body {
 
 .header {
   opacity: 0.75;
-  width: 100%;
+  width: auto;
   background: #CFCFCF;
   background: linear-gradient(to top, #CECECE 0%, #FFFFFF 100%);
   background-clip: text;
@@ -29,21 +34,21 @@ body {
   font-size: 80px;
   letter-spacing: -0.05em;
   line-height: 1;
+  margin-top: 20px;
 }
 
 
 h1 {
   position: relative;
-  font-size: 2vw;
+  font-size: var(--twa-fs);
   font-weight: 400;
-  /* padding-left: 15vw; */
   overflow: hidden;
 }
 
 h1 .box {
   position: absolute;
   bottom: 0;
-  height: .1vw;
+  height: var(--twa-bh);
 }
 
 h1 .box,
