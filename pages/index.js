@@ -3,7 +3,7 @@ import StarField from "@/components/StarField";
 import Tagline from "@/components/Tagline";
 import { IoPencilOutline } from "react-icons/io5";
 import { MdClear } from "react-icons/md";
-import { BsClipboard2Fill } from "react-icons/bs";
+import { BsClipboard2Fill, BsClipboard2CheckFill } from "react-icons/bs";
 
 export default function Home() {
   const [inputText, setInputText] = useState("");
@@ -12,7 +12,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [isInputEmpty, setIsInputEmpty] = useState(true);
   const [outputVisible, setOutputVisible] = useState(false);
-  const [copiedMessageVisible, setCopiedMessageVisible] = useState(false); // State to track visibility of copied message
+  const [copiedIconVisible, setCopiedIconVisible] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -58,9 +58,9 @@ export default function Home() {
     navigator.clipboard
       .writeText(apiOutput)
       .then(() => {
-        setCopiedMessageVisible(true);
+        setCopiedIconVisible(true);
         setTimeout(() => {
-          setCopiedMessageVisible(false);
+          setCopiedIconVisible(false);
         }, 5000);
       })
       .catch((error) => console.error("Failed to copy:", error));
@@ -96,7 +96,7 @@ export default function Home() {
             />
             {!isLoading && !isInputEmpty && (
               <MdClear
-                className="absolute top-3 right-3 text-white text-lg cursor-pointer"
+                className="absolute top-3 right-3 text-white text-sm xs:text-lg cursor-pointer"
                 onClick={clearInputText}
               />
             )}
@@ -106,13 +106,6 @@ export default function Home() {
               type="submit"
               disabled={isLoading || isInputEmpty}
               onClick={handleRewrite}
-              aria-label={
-                isLoading
-                  ? "Result is being processed"
-                  : isInputEmpty
-                  ? "Input area is empty"
-                  : ""
-              }
             >
               {isLoading ? (
                 <div>
@@ -137,17 +130,26 @@ export default function Home() {
               <div className="flex justify-center mb-3">
                 <div className="output-header">Output</div>
               </div>
-              <div className="relative">
-                <div className="output-content">{apiOutput}</div>
-                <BsClipboard2Fill
-                  className="absolute top-3 right-3 text-white text-xs cursor-pointer"
-                  onClick={copyToClipboard}
+              <div className="output-container relative">
+                <textarea
+                  placeholder="start typing here....."
+                  className="output-content"
+                  value={apiOutput}
+                  disabled={true}
                 />
+                {copiedIconVisible ? (
+                  <BsClipboard2CheckFill
+                    className="absolute top-3 right-3 text-green-500 text-[10px] xs:text-xs cursor-pointer"
+                    onClick={copyToClipboard}
+                  />
+                ) : (
+                  <BsClipboard2Fill
+                    className="absolute top-3 right-3 text-white text-[10px] xs:text-xs cursor-pointer"
+                    onClick={copyToClipboard}
+                  />
+                )}
               </div>
             </div>
-          )}
-          {copiedMessageVisible && (
-            <p className="copied-message">Content copied to clipboard.</p>
           )}
           {error && <p style={{ color: "red" }}>{error}</p>}
         </form>
