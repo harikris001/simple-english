@@ -183,30 +183,6 @@ body {
     rgba(113, 47, 255, 0.12);
 }
 
-/* Style the tooltip */
-/* .rewrite-btn button[aria-label]::before {
-  content: attr(
-    aria-label
-  ); 
-  background-color: #FFFFFF;
-  color: #000000; 
-  padding: 5px;
-  border-radius: 5px; 
-  position: absolute; 
-  top: -35px; 
-  left: 50%; 
-  transform: translateX(-50%);
-  z-index: 1; 
-  display: none;
-  white-space: nowrap
-}
-
-
-.rewrite-btn button:hover[aria-label]::before {
-  display: block; 
-  width: auto; 
-} */
-
 .copied-message {
   color: #ffffff;
   animation: fadeOut 5s forwards;
@@ -220,55 +196,6 @@ body {
     opacity: 0;
   }
 }
-
-.loader {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  display: inline-block;
-  border-top: 2px solid #fff;
-  border-right: 2px solid transparent;
-  box-sizing: border-box;
-  animation: rotation 1s linear infinite;
-}
-
-@keyframes rotation {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-/* .output {
-  place-content: center flex-start;
-  align-items: center;
-  display: flex;
-  flex: 0 0 auto;
-  flex-flow: column nowrap;
-  gap: 10px;
-  height: min-content;
-  max-width: 1200px;
-  overflow: hidden;
-  position: relative;
-  width: 100%;
-} */
-
-/* .output-header-container {
-  place-content: center;
-  align-items: center;
-  display: flex;
-  flex: 0 0 auto;
-  flex-flow: column nowrap;
-  gap: 16px;
-  height: min-content;
-  overflow: hidden;
-  padding: 0px;
-  position: relative;
-  width: 100%;
-} */
 
 .output-header {
   font-size: 28px;
@@ -288,21 +215,8 @@ body {
   margin: 0;
 }
 
-/* .output-content {
-  outline: none;
-  display: flex;
-  /* max-width: 25%; */
-/* flex-direction: column;
-  justify-content: flex-start;
-  flex-shrink: 0;
-  transform: none;
-}
+/* Loading button animation */
 
-.output-content p {
-  text-align: center;
-  white-space: pre-line;
-  color: rgba(255, 255, 255, 0.5);
-} */
 */ .la-line-scale-pulse-out,
 .la-line-scale-pulse-out > div {
   position: relative;
@@ -397,9 +311,7 @@ body {
   margin-top: 0;
   margin-bottom: 0;
 }
-/*
- * Animation
- */
+
 @-webkit-keyframes line-scale-pulse-out {
   0% {
     -webkit-transform: scaley(1);
@@ -462,6 +374,8 @@ body {
     transform: scaley(1);
   }
 }
+
+/* Scrollbar Styling */
 
 ::-webkit-scrollbar {
   width: 0.65vw;
