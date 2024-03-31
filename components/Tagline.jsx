@@ -30,7 +30,7 @@ function Tagline() {
     }, []); // Empty dependency array ensures the effect runs only once after initial render
 
     return (
-        <div className='flex items-center'>
+        <div className='twa flex items-center'>
             <h1>
                 <span className='box'></span>
                 <span className='f-text'>Rewrite your Messages to make them</span>

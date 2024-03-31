@@ -55,14 +55,15 @@ export default function Home() {
   };
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(apiOutput)
+    navigator.clipboard
+      .writeText(apiOutput)
       .then(() => {
         setCopiedMessageVisible(true);
         setTimeout(() => {
           setCopiedMessageVisible(false);
         }, 5000);
       })
-      .catch((error) => console.error('Failed to copy:', error));
+      .catch((error) => console.error("Failed to copy:", error));
   };
 
   return (
@@ -82,10 +83,10 @@ export default function Home() {
             width: "100%",
           }}
         >
-          <div className="prompt-container">
+          <div className="input-container">
             <textarea
-              placeholder="start typing here"
-              className="prompt-box"
+              placeholder="start typing here....."
+              className="input-content"
               value={inputText}
               onChange={(e) => {
                 setInputText(e.target.value);
@@ -93,52 +94,49 @@ export default function Home() {
               }}
               disabled={isLoading}
             />
-            {!isLoading &&
-              !isInputEmpty && (
-                <MdClear
-                  className="absolute top-3 right-3 text-white text-lg"
-                  onClick={clearInputText}
-                />
-              )}
-          </div>
-          <button
-            type="submit"
-            className="flex gap-1 items-center"
-            disabled={isLoading || isInputEmpty}
-            onClick={handleRewrite}
-            aria-label={
-              isLoading
-                ? "Result is being processed"
-                : isInputEmpty
-                ? "Input area is empty"
-                : ""
-            }
-          >
-            {isLoading ? (
-              <div className="button-content">
-                <div class="la-line-scale-pulse-out la-dark la-sm">
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                </div>
-              </div>
-            ) : (
-              <div className="button-content flex gap-2 items-center">
-                <IoPencilOutline className="text-sm" />
-                <p>Rewrite</p>
-              </div>
+            {!isLoading && !isInputEmpty && (
+              <MdClear
+                className="absolute top-3 right-3 text-white text-lg cursor-pointer"
+                onClick={clearInputText}
+              />
             )}
-          </button>
+          </div>
+          <div className="rewrite-btn">
+            <button
+              type="submit"
+              disabled={isLoading || isInputEmpty}
+              onClick={handleRewrite}
+              aria-label={
+                isLoading
+                  ? "Result is being processed"
+                  : isInputEmpty
+                  ? "Input area is empty"
+                  : ""
+              }
+            >
+              {isLoading ? (
+                <div>
+                  <div class="la-line-scale-pulse-out la-dark la-sm">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-center">
+                  <IoPencilOutline className="text-lg mr-2" />
+                  <p>Rewrite</p>
+                </div>
+              )}
+            </button>
+          </div>
           {outputVisible && (
             <div>
-              <div className="output-header-container">
-                <div className="output-header">
-                  <h3>Output</h3>
-                </div>
+              <div className="flex justify-center mb-3">
+                <div className="output-header">Output</div>
               </div>
-
               <div className="relative">
                 <div className="output-content">{apiOutput}</div>
                 <BsClipboard2Fill
@@ -149,7 +147,7 @@ export default function Home() {
             </div>
           )}
           {copiedMessageVisible && (
-            <p className="copied-message">Content copied to clipboard</p>
+            <p className="copied-message">Content copied to clipboard.</p>
           )}
           {error && <p style={{ color: "red" }}>{error}</p>}
         </form>
