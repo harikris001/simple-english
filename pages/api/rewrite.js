@@ -2,7 +2,8 @@ import { Ollama } from "@langchain/community/llms/ollama";
 
 
 const promptPrefix = `Correct and Rewrite the text delimited in triple backticks in simple English.
-Output ONLY the rewritten text.`
+Output ONLY the rewritten text without any formatting or styling.
+If you are unable to correct or rewrite the given text as it is only a sequence of characters and does not form coherent English sentences or phrases then output as "Enter a valid sentence"`
 
 
 export default async function handler(req, res) {
