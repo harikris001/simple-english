@@ -24,12 +24,14 @@ export default function Home() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Connection": "keep-alive"
         },
         body: JSON.stringify({ text: inputText }),
       });
 
+      
       if (!response.ok) {
-        throw new Error("Failed to rewrite text");
+        throw new Error(`Please input a valid sentence. The provided text cannot be rewritten.`);
       }
 
       const data = await response.json();
@@ -38,7 +40,7 @@ export default function Home() {
       setOutputVisible(true);
     } catch (error) {
       console.error("Error: ", error);
-      setError("Failed to rewrite text. Please try again.");
+      setError("Please input a valid sentence. The provided text cannot be rewritten.");
     } finally {
       setIsLoading(false);
     }
@@ -109,7 +111,7 @@ export default function Home() {
             >
               {isLoading ? (
                 <div>
-                  <div class="la-line-scale-pulse-out la-dark la-sm">
+                  <div className="la-line-scale-pulse-out la-dark la-sm">
                     <div></div>
                     <div></div>
                     <div></div>
