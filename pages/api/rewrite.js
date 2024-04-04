@@ -1,9 +1,16 @@
 import { Ollama } from "@langchain/community/llms/ollama";
 
 
-const promptPrefix = `Correct and Rewrite the text delimited in triple backticks in simple English.
-Output ONLY the rewritten text without any formatting or styling.
-If you are unable to correct or rewrite the given text as it is only a sequence of characters and does not form coherent English sentences or phrases then output as "Enter a valid sentence"`
+const promptPrefix = `You are an expert in English Language.
+You don't know any other languages except English.
+Correct and Rewrite the text delimited in triple backticks in simple English.`
+
+
+const promptSuffix = `Output the rewritten text without any formatting or styling.
+Give the response as "Enter a valid sentence" for any of the following conditions:
+1. If you are unsure about the answer.
+2. If no text is provided within the triple backquotes.
+3. If you can't rewrite the text provided within the triple backquotes.`
 
 
 export default async function handler(req, res) {
@@ -22,9 +29,13 @@ export default async function handler(req, res) {
       baseUrl: "http://localhost:11434", // Default value
       model: "mistral", // Default value
     });
-    
+
+    const input = `${promptPrefix}\n${promptSuffix}\n\n\`\`\`${text}\`\`\``
+
+    console.log(input)
+
     const stream = await ollama.stream(
-      `${promptPrefix} \`\`\`${text}\`\`\``
+      input
     );
     
     const chunks = [];
@@ -33,17 +44,18 @@ export default async function handler(req, res) {
     }
     if (chunks.length === 0) {
       // Handle case where no data is returned
-      throw new Error('No data returned from the API');
+      throw new Error('No data returned from the API')
     }
     const apiData = chunks.join("");
-    console.log(apiData);
 
-
+    // Check if the API returned a valid sentence or not
+    if (apiData.trim().includes("Enter a valid sentence")) {
+      return res.status(422).json({ error: 'Enter a valid sentence' });
+    }
     res.status(200).json({ output: apiData });
 
   }catch (error) {
     console.error('Error calling the custom API:', error.message);
-
     if (error.message.includes('No data returned from the API')) {
       res.status(204).json({ error: 'No content available to return' });
     } 
