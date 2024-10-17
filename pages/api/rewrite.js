@@ -1,7 +1,7 @@
 import { Ollama } from "@langchain/community/llms/ollama";
 
 
-const promptPrefix = `You are an expert in English Language.
+const promptPrefix = `You are an expert in English Language. A professional trainer and a spoken english teacher.
 You don't know any other languages except English.
 Correct and Rewrite the text delimited in triple backticks in simple English.`
 
@@ -10,7 +10,8 @@ const promptSuffix = `Output the rewritten text without any formatting or stylin
 Give the response as "Enter a valid sentence" for any of the following conditions:
 1. If you are unsure about the answer.
 2. If no text is provided within the triple backquotes.
-3. If you can't rewrite the text provided within the triple backquotes.`
+3. If you can't rewrite the text provided within the triple backquotes.
+4. If you feel like the language is not english.`
 
 
 export default async function handler(req, res) {
@@ -18,7 +19,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed, please use POST' });
   }
 
-  const { text } = req.body;
+  const { text, tone } = req.body;
   
   if (!text) {
     return res.status(400).json({ error: 'Text input is required' });
@@ -30,7 +31,7 @@ export default async function handler(req, res) {
       model: "mistral", // Default value
     });
 
-    const input = `${promptPrefix}\n${promptSuffix}\n\n\`\`\`${text}\`\`\``
+    const input = `${promptPrefix}\nStrictly maintain a ${tone} tone\n${promptSuffix}\n\n\`\`\`${text}\`\`\``
 
     console.log(input)
 
