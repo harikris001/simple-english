@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState, useMemo, useContext } from "react";
 import StarField from "@/components/StarField";
 import Tagline from "@/components/Tagline";
 import { IoPencilOutline } from "react-icons/io5";
-import { MdClear } from "react-icons/md";
+import { MdClear, MdMenu, MdClose } from "react-icons/md";
 import { BsClipboard2Fill, BsClipboard2CheckFill } from "react-icons/bs";
+import Sidebar from "@/components/SideBar";
+import { ToneContext, ToneProvider } from "@/helpers/tonecontext";
 
 export default function Home() {
   const [inputText, setInputText] = useState("");
@@ -13,65 +15,94 @@ export default function Home() {
   const [isInputEmpty, setIsInputEmpty] = useState(true);
   const [outputVisible, setOutputVisible] = useState(false);
   const [copiedIconVisible, setCopiedIconVisible] = useState(false);
+  const [showSidebar, setShowSidebar] = useState(true);
+  const { tone } = useContext(ToneContext);
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    setError("");
-    setIsLoading(true);
+  const handleSubmit = useMemo(
+    () => async (event) => {
+      event.preventDefault();
+      setError("");
+      setIsLoading(true);
 
-    try {
-      const response = await fetch("/api/rewrite", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Connection": "keep-alive"
-        },
-        body: JSON.stringify({ text: inputText }),
-      });
+      try {
+        const response = await fetch("/api/rewrite", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ text: inputText, tone: tone }),
+        });
 
-      
-      if (!response.ok) {
-        throw new Error(`Please input a valid sentence. The provided text cannot be rewritten.`);
+        if (!response.ok) {
+          throw new Error(
+            `Please input a valid sentence. The provided text cannot be rewritten.`
+          );
+        }
+
+        const data = await response.json();
+        const { output } = data;
+        setApiOutput(output);
+        setOutputVisible(true);
+      } catch (error) {
+        console.error("Error: ", error);
+        setError(
+          "Please input a valid sentence. The provided text cannot be rewritten."
+        );
+      } finally {
+        setIsLoading(false);
       }
+    },
+    [inputText, tone]
+  );
 
-      const data = await response.json();
-      const { output } = data;
-      setApiOutput(output);
-      setOutputVisible(true);
-    } catch (error) {
-      console.error("Error: ", error);
-      setError("Please input a valid sentence. The provided text cannot be rewritten.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const clearInputText = useMemo(
+    () => () => {
+      setInputText("");
+      setIsInputEmpty(true);
+    },
+    []
+  );
 
-  const clearInputText = () => {
-    setInputText("");
-    setIsInputEmpty(true);
-  };
+  const handleRewrite = useMemo(
+    () => () => {
+      setApiOutput("");
+      setOutputVisible(false);
+    },
+    []
+  );
 
-  const handleRewrite = () => {
-    setApiOutput("");
-    setOutputVisible(false);
-  };
-
-  const copyToClipboard = () => {
-    navigator.clipboard
-      .writeText(apiOutput)
-      .then(() => {
-        setCopiedIconVisible(true);
-        setTimeout(() => {
-          setCopiedIconVisible(false);
-        }, 5000);
-      })
-      .catch((error) => console.error("Failed to copy:", error));
-  };
+  const copyToClipboard = useMemo(
+    () => () => {
+      navigator.clipboard
+        .writeText(apiOutput)
+        .then(() => {
+          setCopiedIconVisible(true);
+          setTimeout(() => {
+            setCopiedIconVisible(false);
+          }, 5000);
+        })
+        .catch((error) => console.error("Failed to copy:", error));
+    },
+    [apiOutput]
+  );
 
   return (
     <div>
       <StarField />
       <div className="flex flex-col items-center">
+        {showSidebar ? (
+          <MdClose
+            className="bg-inherit text-slate-400 size-9 absolute right-0 top-0 z-10 mr-2 mt-2"
+            onClick={() => setShowSidebar(!showSidebar)}
+          />
+        ) : (
+          <MdMenu
+            className="bg-inherit text-slate-400 size-9 absolute right-0 top-0 z-10 mr-2 mt-2"
+            onClick={() => setShowSidebar(!showSidebar)}
+          />
+        )}
+
+        {showSidebar && <Sidebar />}
         <div className="header">ClearSpeech</div>
         <Tagline />
         <form
